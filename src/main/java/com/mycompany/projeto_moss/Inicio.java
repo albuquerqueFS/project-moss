@@ -43,6 +43,7 @@ public class Inicio extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
         txt_password = new javax.swing.JPasswordField();
+        btn_entrar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -58,7 +59,7 @@ public class Inicio extends javax.swing.JFrame {
                 formMousePressed(evt);
             }
         });
-        getContentPane().setLayout(new java.awt.GridLayout());
+        getContentPane().setLayout(new java.awt.GridLayout(1, 0));
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -66,7 +67,7 @@ public class Inicio extends javax.swing.JFrame {
         jLabel4.setIcon(new javax.swing.ImageIcon("C:\\Users\\PICHAU\\Documents\\NetBeansProjects\\Projeto_MOSS\\src\\main\\java\\logo_moss_branco.png")); // NOI18N
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, -1, -1));
 
-        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\PICHAU\\Documents\\NetBeansProjects\\Projeto_MOSS\\src\\main\\java\\moss_background.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon("C:\\Users\\PICHAU\\Documents\\NetBeansProjects\\Projeto_MOSS\\src\\main\\java\\moss_background_blue.png")); // NOI18N
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-4, 0, 560, -1));
 
         getContentPane().add(jPanel1);
@@ -80,7 +81,7 @@ public class Inicio extends javax.swing.JFrame {
         jLabel1.setText("Login");
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, -1, -1));
 
-        txt_email.setBackground(new java.awt.Color(32, 32, 32));
+        txt_email.setBackground(new java.awt.Color(30, 30, 30));
         txt_email.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         txt_email.setForeground(new java.awt.Color(255, 255, 255));
         txt_email.setText("E-mail");
@@ -99,7 +100,7 @@ public class Inicio extends javax.swing.JFrame {
         jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 190, -1, -1));
         jPanel2.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 230, 320, 10));
 
-        txt_password.setBackground(new java.awt.Color(32, 32, 32));
+        txt_password.setBackground(new java.awt.Color(30, 30, 30));
         txt_password.setForeground(new java.awt.Color(255, 255, 255));
         txt_password.setText("gohorse");
         txt_password.setBorder(null);
@@ -110,12 +111,30 @@ public class Inicio extends javax.swing.JFrame {
         });
         jPanel2.add(txt_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, 320, -1));
 
-        jButton1.setBackground(new java.awt.Color(91, 99, 202));
-        jButton1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("ENTRAR");
+        btn_entrar.setBackground(new java.awt.Color(91, 99, 202));
+        btn_entrar.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btn_entrar.setForeground(new java.awt.Color(255, 255, 255));
+        btn_entrar.setText("ENTRAR");
+        btn_entrar.setBorder(null);
+        btn_entrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_entrarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btn_entrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 280, 320, 40));
+
+        jButton1.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(91, 99, 202));
+        jButton1.setText("X");
         jButton1.setBorder(null);
-        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 280, 320, 40));
+        jButton1.setBorderPainted(false);
+        jButton1.setContentAreaFilled(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 20, -1, -1));
 
         getContentPane().add(jPanel2);
 
@@ -145,8 +164,57 @@ public class Inicio extends javax.swing.JFrame {
             txt_password.setText("");
     }//GEN-LAST:event_txt_passwordKeyPressed
 
+    private void btn_entrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_entrarActionPerformed
+        inicio.setVisible(false);
+        new Dashboard().setVisible(true);
+    }//GEN-LAST:event_btn_entrarActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+    * @param args the command line arguments
+    */
+    public static void main(String args[]) {
+        
+        inicio = new Inicio();
+        
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                inicio.setVisible(true);
+            }
+        });
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_entrar;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
