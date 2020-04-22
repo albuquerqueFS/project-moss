@@ -83,6 +83,7 @@ public class Dashboard extends javax.swing.JFrame {
         HWDiskStore[] discos = hal.getDiskStores();
         System.out.println(discos[0]);
         System.out.println(discos[1]);
+        
         for (int x = 0; x < discos.length; x++) {
             JLabel lbl_diskData = new javax.swing.JLabel();
             
@@ -475,6 +476,7 @@ public class Dashboard extends javax.swing.JFrame {
         lbl_memPag.setText("lbl_memPag");
 
         jp_discos.setBackground(new java.awt.Color(40, 40, 40));
+        jp_discos.setLayout(new java.awt.GridLayout(2, 1));
 
         javax.swing.GroupLayout jp_hardwareLayout = new javax.swing.GroupLayout(jp_hardware);
         jp_hardware.setLayout(jp_hardwareLayout);
@@ -513,7 +515,7 @@ public class Dashboard extends javax.swing.JFrame {
                         .addComponent(jLabel21)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_memPag)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
                 .addGroup(jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jp_hardwareLayout.createSequentialGroup()
                         .addComponent(jLabel18)
@@ -546,11 +548,11 @@ public class Dashboard extends javax.swing.JFrame {
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_freq))
-                    .addGroup(jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jSeparator4)
-                        .addComponent(jLabel15))
-                    .addComponent(jp_discos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(289, 289, 289))
+                    .addGroup(jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jp_discos, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jSeparator4, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(293, 293, 293))
         );
         jp_hardwareLayout.setVerticalGroup(
             jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -617,8 +619,8 @@ public class Dashboard extends javax.swing.JFrame {
                         .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jp_discos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jp_hardwareLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel20)
                             .addComponent(lbl_memTot))
@@ -629,8 +631,9 @@ public class Dashboard extends javax.swing.JFrame {
                         .addGap(11, 11, 11)
                         .addGroup(jp_hardwareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel21)
-                            .addComponent(lbl_memPag))))
-                .addContainerGap(147, Short.MAX_VALUE))
+                            .addComponent(lbl_memPag)))
+                    .addComponent(jp_discos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(147, 147, 147))
         );
 
         jPanel1.add(jp_hardware, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 1180, 600));
