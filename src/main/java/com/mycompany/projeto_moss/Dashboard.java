@@ -11,22 +11,43 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.awt.image.ImageObserver.ERROR;
 import javax.swing.JOptionPane;
+
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimerTask;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Timer;
+
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.JScrollPane;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.JScrollPane;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import oshi.*;
 import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
 import oshi.hardware.HWDiskStore;
 import oshi.software.os.OperatingSystem.ProcessSort;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 import oshi.software.os.OSProcess;
+import oshi.util.FormatUtil;
+import oshi.util.Util;
 
 /**
  *
@@ -40,6 +61,10 @@ public class Dashboard extends javax.swing.JFrame {
     private static Dashboard dashboard;
     private static JFreeChart chart; 
     
+    private static final double[] COLUMN_WIDTH_PERCENT = { 0.07, 0.07, 0.07, 0.07, 0.09, 0.1, 0.1, 0.08, 0.35 };
+    private static final String[] COLUMNS = { "Process Name", "% Memória", "% CPU", "Threads",
+            "RSS" };
+    private transient Map<Integer, OSProcess> priorSnapshotMap = new HashMap<>();
     private SystemInfo si;
     private HardwareAbstractionLayer hal;
     
@@ -55,6 +80,7 @@ public class Dashboard extends javax.swing.JFrame {
         si = new SystemInfo();
         hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
+        GlobalMemory memory = hal.getMemory();
         
         // atribuindo informações do sistema operacional
         lbl_so.setText(os.getFamily());
@@ -81,8 +107,6 @@ public class Dashboard extends javax.swing.JFrame {
         
         // informações do disco
         HWDiskStore[] discos = hal.getDiskStores();
-        System.out.println(discos[0]);
-        System.out.println(discos[1]);
         
         for (int x = 0; x < discos.length; x++) {
             JLabel lbl_diskData = new javax.swing.JLabel();
@@ -93,7 +117,58 @@ public class Dashboard extends javax.swing.JFrame {
             jp_discos.add(lbl_diskData);
             jp_discos.updateUI(); 
         }
+        
+        // lista de processos
+        List<OSProcess> procs = Arrays.asList(os.getProcesses(15, ProcessSort.CPU));
+        DefaultTableModel model = (DefaultTableModel) jt_processos.getModel();
+
+        for (int i = 0; i < procs.size() && i < 15; i++) {
+            OSProcess p = procs.get(i);
+
+            model.addRow(new Object[]{p.getName(), // nome do processo
+                FormatUtil.formatBytes(p.getResidentSetSize()), // % memória
+                (int) 100d * p.getResidentSetSize() / memory.getTotal() + "%", // % CPU 
+                (int) 100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(), // THREADS
+                FormatUtil.formatBytes(p.getVirtualSize())}); // RSS
+        }
+        
+        TimerTask listarProcessos;
+        listarProcessos = new TimerTask() {
+            @Override
+            public void run() {
                 
+            // sensores de temperatura
+            lbl_temp.setText(String.valueOf(hal.getSensors().getCpuTemperature()));
+            lbl_volt.setText(String.valueOf(hal.getSensors().getCpuVoltage()));
+            lbl_vel.setText(hal.getSensors().getFanSpeeds().length + "");
+
+            // informações da memória
+            lbl_memDisp.setText(Long.toString(hal.getMemory().getAvailable()).substring(0, 4) + " MB");
+            lbl_memPag.setText(hal.getMemory().getPageSize() + " MB");
+            lbl_memTot.setText(Long.toString(hal.getMemory().getTotal()).substring(0, 4) + " MB");
+            hal.getMemory().getPhysicalMemory();
+            hal.getMemory().getVirtualMemory();
+        
+                List<OSProcess> procs = Arrays.asList(os.getProcesses(15, ProcessSort.CPU));
+
+                for (int i = 0; i < procs.size() && i < 15; i++) {
+                    OSProcess p = procs.get(i);
+
+                    model.addRow(new Object[]{p.getName(), // nome do processo
+                        FormatUtil.formatBytes(p.getResidentSetSize()), // % memória
+                        (int) 100d * p.getResidentSetSize() / memory.getTotal() + "%",
+                        (int) 100d * (p.getKernelTime() + p.getUserTime()) / p.getUpTime(),
+                        FormatUtil.formatBytes(p.getVirtualSize())});
+                }
+                
+                for (int i = jt_processos.getRowCount() / 2; i != 0 ; i--) {
+                    model.removeRow(i);
+                }
+            }
+        }; 
+        
+        new Timer().schedule(listarProcessos, 0, 1000);
+        
         // definindo visibilidade dos painéis
         jp_processos.setVisible(false);
         jp_recursos.setVisible(false);
@@ -121,6 +196,11 @@ public class Dashboard extends javax.swing.JFrame {
         ind_4 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jp_processos = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jt_processos = new javax.swing.JTable();
+        jSeparator5 = new javax.swing.JSeparator();
+        jLabel22 = new javax.swing.JLabel();
         jp_hardware = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -157,7 +237,6 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel21 = new javax.swing.JLabel();
         lbl_memPag = new javax.swing.JLabel();
         jp_discos = new javax.swing.JPanel();
-        jp_processos = new javax.swing.JPanel();
         jp_recursos = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -352,6 +431,57 @@ public class Dashboard extends javax.swing.JFrame {
         side_pane.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         jPanel1.add(side_pane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 140, 600));
+
+        jp_processos.setBackground(new java.awt.Color(40, 40, 40));
+
+        jt_processos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Nome do Processo", "Memória %", "CPU %", "Threads", "RSS"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jt_processos);
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel22.setText("PROCESSOS EM EXECUÇÃO");
+
+        javax.swing.GroupLayout jp_processosLayout = new javax.swing.GroupLayout(jp_processos);
+        jp_processos.setLayout(jp_processosLayout);
+        jp_processosLayout.setHorizontalGroup(
+            jp_processosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jp_processosLayout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addGroup(jp_processosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jp_processosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jSeparator5)
+                        .addComponent(jLabel22))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(600, Short.MAX_VALUE))
+        );
+        jp_processosLayout.setVerticalGroup(
+            jp_processosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jp_processosLayout.createSequentialGroup()
+                .addContainerGap(50, Short.MAX_VALUE)
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(92, 92, 92))
+        );
+
+        jPanel1.add(jp_processos, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 1180, 600));
 
         jp_hardware.setBackground(new java.awt.Color(40, 40, 40));
 
@@ -638,21 +768,6 @@ public class Dashboard extends javax.swing.JFrame {
 
         jPanel1.add(jp_hardware, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 1180, 600));
 
-        jp_processos.setBackground(new java.awt.Color(40, 40, 40));
-
-        javax.swing.GroupLayout jp_processosLayout = new javax.swing.GroupLayout(jp_processos);
-        jp_processos.setLayout(jp_processosLayout);
-        jp_processosLayout.setHorizontalGroup(
-            jp_processosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1180, Short.MAX_VALUE)
-        );
-        jp_processosLayout.setVerticalGroup(
-            jp_processosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-        );
-
-        jPanel1.add(jp_processos, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 1180, 600));
-
         jp_recursos.setBackground(new java.awt.Color(40, 40, 40));
 
         javax.swing.GroupLayout jp_recursosLayout = new javax.swing.GroupLayout(jp_recursos);
@@ -816,7 +931,7 @@ public class Dashboard extends javax.swing.JFrame {
             jp_processos.setVisible(false);
         }
     }
-        
+     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btn_2;
     private javax.swing.JPanel btn_3;
@@ -838,6 +953,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -846,14 +962,17 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
     private javax.swing.JPanel jp_discos;
     private javax.swing.JPanel jp_hardware;
     private javax.swing.JPanel jp_processos;
     private javax.swing.JPanel jp_recursos;
+    private javax.swing.JTable jt_processos;
     private javax.swing.JLabel lbl_arq;
     private javax.swing.JLabel lbl_family;
     private javax.swing.JLabel lbl_freq;
